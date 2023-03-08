@@ -1,0 +1,35 @@
+@charset "UTF-8";
+@font-face {
+  font-family: 'Hyundai Sans Head Bold';
+  src: url('@fonts/HyundaiSansHead-Bold.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Hyundai Sans Head Medium';
+  src: url('@fonts/HyundaiSansHead-Medium.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Hyundai Sans Head Light';
+  src: url('@fonts/HyundaiSansHead-Light.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Hyundai Sans Head Regular';
+  src: url('@fonts/HyundaiSansHead-Regular.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Hyundai Sans Text Regular';
+  src: url('@fonts/HyundaiSansText-Regular.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Hyundai Sans Text Bold';
+  src: url('@fonts/HyundaiSansText-Bold.otf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Hyundai Sans Text Medium';
+  src: url('@fonts/HyundaiSansText-Medium.otf') format('truetype');
+}

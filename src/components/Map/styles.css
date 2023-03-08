@@ -1,0 +1,115 @@
+/** InfoBubble */
+.H_ib {
+  position: absolute;
+  left: 0.91em;
+  left: -100%;
+}
+.H_ib_tail {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.H_ib_tail::before {
+  bottom: -1px;
+  border-width: 10px;
+  position: absolute;
+  display: block;
+  content: '';
+  border-color: transparent;
+  border-style: solid;
+  right: 0px;
+}
+
+.H_ib_tail::after {
+  bottom: 0;
+  position: absolute;
+  display: block;
+  content: '';
+  border-color: white;
+  border-style: solid;
+  border-width: 0;
+}
+
+.H_ib.H_ib_top .H_ib_tail::after {
+  border-width: 10px 10px 0px 10px;
+  border-color: white transparent;
+}
+
+.H_ib.H_ib_top .H_ib_tail::before {
+  border-top-color: rgba(15, 22, 33, 0.2);
+  border-bottom-width: 0px;
+}
+
+.H_ib_notail .H_ib_tail {
+  display: none;
+}
+.H_ib_body {
+  background: white;
+  position: absolute;
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* padding: 20px; */
+  /* gap: 20px; */
+  /* top: 11.67%; */
+  /* bottom: 38.17%; */
+  width: 370px;
+  height: 300px;
+  border-radius: 0px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  /* right: 0px; */
+  /* bottom: 0.5em; */
+  /* margin-right: -3em; */
+  /* margin-bottom: 0.5em; */
+}
+
+.H_ib_close {
+  font-size: 0.6em;
+  position: absolute;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  top: 12px;
+  z-index: 1;
+  background: none;
+  box-shadow: none;
+}
+
+.H_ui[dir='rtl'] .H_ib_close {
+  left: 12px;
+  right: auto;
+}
+
+.H_ib_close svg.H_icon {
+  top: 0;
+  transform: none;
+  width: auto;
+  height: auto;
+}
+
+.H_ib_noclose .H_ib_close {
+  display: none;
+}
+.H_ib_noclose .H_ib_body {
+  padding: 0 0 0 0;
+}
+
+.H_ib_content {
+  min-width: 6em;
+  font: 18px 'Lucida Grande', Arial, Helvetica, sans-serif;
+  line-height: 24px;
+  margin: 16px 28px 20px 16px;
+  color: rgba(15, 22, 33, 0.8);
+  user-select: text;
+  -moz-user-select: text;
+  -khtml-user-select: text;
+  -webkit-user-select: text;
+  -o-user-select: text;
+  -ms-user-select: text;
+}
+
+.H_ui[dir='rtl'] .H_ib_content {
+  margin: 16px 16px 20px 28px;
+}
