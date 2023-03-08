@@ -28,11 +28,13 @@ export const styles = {
 
   step: {
     width: '25%',
-    // '&.MuiStepLabel-root .MuiStepLabel-label': {
-    //   // ...fonts.b1_head_m,
-    //   color: color.secondary_active_red,
-    // },
-
+    '& .MuiStepLabel-labelContainer': {
+      paddingRight: '22px',
+    },
+    '& .MuiStepLabel-labelContainer span': {
+      ...fonts.b1_head_m,
+      color: color.grey_500,
+    },
     '& .MuiStepLabel-root .Mui-completed': {
       color: color.primary_blue,
     },
@@ -40,7 +42,6 @@ export const styles = {
       color: color.grey_white,
     },
     '& .MuiStepLabel-root .Mui-active': {
-      ...fonts.b1_head_m,
       color: color.secondary_active_blue,
     },
     '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
@@ -51,27 +52,10 @@ export const styles = {
     },
   },
 
-  stepLabel: {
-    ...fonts.h1,
-    '&.MuiStepLabel-label .MuiTypography-root': {
-      ...fonts.h1,
-    },
-    // '& .MuiStepLabel-root .Mui-completed': {
-    //   color: color.primary_blue,
-    // },
-    // '& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel': {
-    //   color: color.grey_white,
-    // },
-    // '& .MuiStepLabel-root .Mui-active': {
-    //   ...fonts.b1_head_m,
-    //   color: color.secondary_active_blue,
-    // },
-    // '& .MuiStepLabel-label.Mui-active.MuiStepLabel-alternativeLabel': {
-    //   color: color.grey_white,
-    // },
-    // '& .MuiStepLabel-root .Mui-active .MuiStepIcon-text': {
-    //   fill: color.grey_white,
-    // },
+  stepLabelBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
 
   stepButton: {

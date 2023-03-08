@@ -33,10 +33,9 @@ export const DealershipMap = forwardRef(({ dealershipList, handleModalOpen, moda
     // initialize a new map
     const hMap = new H.Map(mapRef.current, vectorLayer, {
       engineType,
-      // center: { lat: modalDealershipInfo?.lttuVal || 51.0, lng: modalDealershipInfo?.lotuVal || 13.7 },
-      center: { lat: modalDealershipInfo?.position.coordinates[1] || 51.0, lng: modalDealershipInfo?.position.coordinates[0] || 13.7 },
+      center: { lat: modalDealershipInfo?.position.coordinates[1] || 52.2, lng: modalDealershipInfo?.position.coordinates[0] || 21.0 },
 
-      zoom: 10,
+      zoom: 9,
       pixelRatio: window.devicePixelRatio || 1,
       padding: { top: 300, right: 0, bottom: 0, left: 35 },
     });

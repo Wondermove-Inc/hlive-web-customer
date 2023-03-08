@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { HLIVE_SERVER_URI } from '@constants';
 
 export default function Dealership(props) {
-  const { currentStep, setCurrentStep } = props;
+  const { currentStep, setCurrentStep, completed, setCompleted } = props;
   const { setSelectedDealershipInfo } = bookingStore();
 
   const [dealershipList, setDealershipList] = useState();
@@ -90,7 +90,9 @@ export default function Dealership(props) {
 
   const handleClick = (dealershipInfo) => {
     setSelectedDealershipInfo(dealershipInfo);
-    // navigate('/schedule');
+    const newCompleted = completed;
+    newCompleted[currentStep] = true;
+    setCompleted(newCompleted);
     setCurrentStep(currentStep + 1);
   };
 

@@ -14,6 +14,7 @@ import Confirmation from '@screens/0430_Confirmation';
 import { styles } from './styles';
 import { color, fonts } from '@theme';
 import bookingStore from '@store/zustand/booking.store';
+import moment from 'moment';
 
 export default function Booking() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -22,11 +23,12 @@ export default function Booking() {
   const steps = [t('model'), t('dealership'), t('schedule'), t('personalinfo')];
   const [completed, setCompleted] = useState({});
   const [isLiveConsult, setIsLiveConsult] = useState(false);
+  const convertedBookingDate = moment(selectedBookingDate).format('MMM-DD-YYYY');
 
   const handleStep = (step) => () => {
-    const newCompleted = completed;
-    newCompleted[currentStep] = true;
-    setCompleted(newCompleted);
+    // const newCompleted = completed;
+    // newCompleted[currentStep] = true;
+    // setCompleted(newCompleted);
     setCurrentStep(step);
   };
 
@@ -84,16 +86,23 @@ export default function Booking() {
               <Stepper nonLinear activeStep={currentStep} connector={<KeyboardArrowRightIcon style={styles.stepConnector} />}>
                 <Step completed={completed[0]} sx={styles.step}>
                   <StepButton style={styles.stepButton} onClick={handleStep(0)}>
-                    <StepLabel sx={styles.stepLabel}>
-                      {/* {t('model')} */}
-                      {selectedVehicleInfo.modelId ? `${t('model')} ${selectedVehicleInfo.modelDescription}` : <Typography>{t('model')}</Typography>}
-                    </StepLabel>
+                    {selectedVehicleInfo.modelId ? (
+                      <Box style={styles.stepLabelBox}>
+                        <Typography>{t('model')}</Typography>
+                        {selectedVehicleInfo.modelDescription}
+                      </Box>
+                    ) : (
+                      `${t('model')}`
+                    )}
                   </StepButton>
                 </Step>
                 <Step completed={completed[1]} sx={styles.step}>
                   <StepButton style={styles.stepButton} onClick={handleStep(1)}>
                     {selectedDealershipInfo._id ? (
-                      <Typography style={{ color: color.primary_blue }}>{selectedDealershipInfo.name}</Typography>
+                      <Box style={styles.stepLabelBox}>
+                        <Typography>{t('dealership')} </Typography>
+                        {selectedDealershipInfo.name}
+                      </Box>
                     ) : (
                       `${t('dealership')}`
                     )}
@@ -101,7 +110,14 @@ export default function Booking() {
                 </Step>
                 <Step completed={completed[2]} sx={styles.step}>
                   <StepButton style={styles.stepButton} onClick={handleStep(2)}>
-                    {selectedBookingDate && selectedBookingTime ? `${selectedBookingDate} ${selectedBookingTime}` : `${t('schedule')}`}
+                    {convertedBookingDate && selectedBookingTime ? (
+                      <Box style={styles.stepLabelBox}>
+                        <Typography>{t('schedule')}</Typography>
+                        {convertedBookingDate} {selectedBookingTime}
+                      </Box>
+                    ) : (
+                      `${t('schedule')}`
+                    )}
                   </StepButton>
                 </Step>
                 <Step completed={completed[3]} sx={styles.step}>

@@ -18,7 +18,7 @@ import 'react-calendar/dist/Calendar.css';
 // import { HLIVE_SERVER_URI } from '@constants';
 
 export default function Schedule(props) {
-  const { currentStep, setCurrentStep, setIsLiveConsult } = props;
+  const { currentStep, setCurrentStep, setIsLiveConsult, completed, setCompleted } = props;
   const { selectedBookingDate, selectedBookingTime, setSelectedBookingDate, setSelectedBookingTime } = bookingStore();
 
   console.log(selectedBookingDate);
@@ -55,7 +55,9 @@ export default function Schedule(props) {
 
   const handleRequestClick = () => {
     setIsLiveConsult(false);
-    // navigate('/personalinfo');
+    const newCompleted = completed;
+    newCompleted[currentStep] = true;
+    setCompleted(newCompleted);
     setCurrentStep(currentStep + 1);
   };
 

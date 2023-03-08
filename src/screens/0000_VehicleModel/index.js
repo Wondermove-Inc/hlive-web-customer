@@ -44,7 +44,6 @@ export default function VehicleModel(props) {
     newCompleted[currentStep] = true;
     setCompleted(newCompleted);
     setCurrentStep(currentStep + 1);
-    // navigate('/dealership');
   };
 
   const vehicleCategory = carType.map((typeName) => {
