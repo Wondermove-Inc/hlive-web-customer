@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { Autocomplete, Box, Button, Grid, FormControl, FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-import { color, fonts } from '@theme';
+import { fonts } from '@theme';
 import { StyledTextInput } from '@components/TextInput';
 import { styles } from './styles';
 import Subtitle from '@components/Subtitle';
@@ -11,33 +11,13 @@ import axios from 'axios';
 import SearchAddress from '@components/AutoComplete';
 import MainCheckBox from '@components/CheckBox';
 import bookingStore from '@store/zustand/booking.store';
-import { encryptData } from '@store/apps/encrypt';
-import moment from 'moment';
+import { encryptData } from '@utils';
 import { HLIVE_SERVER_URI } from '@constants';
+import moment from 'moment';
 
 export default function PersonalInfo(props) {
   const { currentStep, setCurrentStep, isLiveConsult } = props;
-  const {
-    selectedVehicleInfo,
-    selectedDealershipInfo,
-    selectedBookingDate,
-    selectedBookingTime,
-    customerInfo,
-    // marketingAgreement,
-    marketingEmail,
-    marketingMail,
-    marketingPhone,
-    marketingMessenger,
-    confirmationResult,
-
-    setCustomerInfo,
-    // setMarketingAgreement,
-    setMarketingEmail,
-    setMarketingMail,
-    setMarketingPhone,
-    setMarketingMessenger,
-    setConfirmationResult,
-  } = bookingStore();
+  const { selectedVehicleInfo, selectedDealershipInfo, selectedBookingDate, selectedBookingTime, customerInfo, setRequestResult } = bookingStore();
 
   const convertedBookingDate = moment(selectedBookingDate).format('YYYY-MM-DD');
 
@@ -45,9 +25,6 @@ export default function PersonalInfo(props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [marketingAgreement, setMarketingAgreement] = useState(false);
-
-  const [privacyAgreement, setPrivacyAgreement] = useState(false);
   const [geoLocation, setGeoLocation] = useState();
   const [title, setTitle] = useState('Mr.');
   const [firstName, setFirstName] = useState(customerInfo?.firstName || '');
@@ -70,7 +47,12 @@ export default function PersonalInfo(props) {
   const [cityError, setCityError] = useState(false);
   const [commentError, setCommentError] = useState(false);
 
-  const [responseResult, setResponseResult] = useState();
+  const [privacyAgreement, setPrivacyAgreement] = useState(false);
+  const [marketingAgreement, setMarketingAgreement] = useState(false);
+  const [marketingEmail, setMarketingEmail] = useState(false);
+  const [marketingMail, setMarketingMail] = useState(false);
+  const [marketingPhone, setMarketingPhone] = useState(false);
+  const [marketingMessenger, setMarketingMessenger] = useState(false);
 
   const nameRegex = /\d/g;
   const emailRegex = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
@@ -94,31 +76,6 @@ export default function PersonalInfo(props) {
     const postCodeAndCity = [postCode, city].join(' ');
     const address = [streetAndHouseNumber, postCodeAndCity].join(', ');
 
-    setCustomerInfo({
-      title,
-      firstName,
-      lastName,
-      email,
-      userPhoneNumber,
-      street,
-      houseNumber,
-      postCode,
-      city,
-      address,
-      comment,
-      ipAddress: geoLocation?.IPv4,
-      country: 'Poland',
-      countryCode: 'PL',
-      language: 'English',
-      languageCode: 'EN',
-      userType: 'GUEST',
-      marketingAgreement,
-      marketingEmail,
-      marketingMail,
-      marketingPhone,
-      marketingMessenger,
-    });
-
     const req = {
       userInfo: {
         title,
@@ -141,7 +98,6 @@ export default function PersonalInfo(props) {
         languageCode: 'EN',
         userType: 'GUEST',
         mobile: userPhoneNumber,
-        marketingAgreement,
         marketingEmail,
         marketingMail,
         marketingPhone,
@@ -190,20 +146,20 @@ export default function PersonalInfo(props) {
         dealershipLocation: selectedDealershipInfo.position,
       },
     };
+    console.log(req);
     const encryptedBody = await encryptData(req);
     try {
       const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/createHLiveRequest', {
         encryptedBody,
       });
       if (response) {
-        setConfirmationResult(response.data.data.serviceRequest);
-        const chatRoomId = response.data.data.serviceRequest._id || '1234567890';
-        console.log('personal info: res', confirmationResult);
+        setRequestResult(response.data.data.serviceRequest._id);
+        const requestId = response.data.data.serviceRequest._id;
 
         isLiveConsult
           ? navigate('/live', {
               state: {
-                chatRoomId,
+                requestId,
               },
             })
           : setCurrentStep(currentStep + 1);
@@ -215,7 +171,6 @@ export default function PersonalInfo(props) {
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
-    console.log(title);
   };
 
   const handleEmailValidation = (event) => {
@@ -228,33 +183,29 @@ export default function PersonalInfo(props) {
     setUserPhoneNumberError(!phoneNumberRegex.test(userPhoneNumber));
   };
 
+  // checkbox button
   const handlePrivacyCheckBox = () => {
     setPrivacyAgreement(!privacyAgreement);
   };
 
-  const handleMarketingCheckBox = (event) => {
+  const handleMarketingCheckBox = () => {
     setMarketingAgreement(!marketingAgreement);
-    console.log(marketingAgreement);
   };
 
-  const handleMarketingEmail = (event) => {
-    setMarketingEmail(event.target.checked);
-    console.log(marketingEmail);
+  const handleMarketingEmail = () => {
+    setMarketingEmail(!marketingEmail);
   };
 
-  const handleMarketingMail = (event) => {
-    setMarketingMail(event.target.checked);
-    console.log(marketingMail);
+  const handleMarketingMail = () => {
+    setMarketingMail(!marketingMail);
   };
 
-  const handleMarketingPhone = (event) => {
-    setMarketingPhone(event.target.checked);
-    console.log(marketingPhone);
+  const handleMarketingPhone = () => {
+    setMarketingPhone(!marketingPhone);
   };
 
-  const handleMarketingMessenger = (event) => {
-    setMarketingMessenger(event.target.checked);
-    console.log(marketingMessenger);
+  const handleMarketingMessenger = () => {
+    setMarketingMessenger(!marketingMessenger);
   };
 
   return (
@@ -356,7 +307,7 @@ export default function PersonalInfo(props) {
 
           <Grid item xs={6} sm={6} md={6} lg={6}>
             <StyledTextInput
-              label={t('zip_postcode')}
+              label={t('zip_postalcode')}
               value={postCode}
               onChange={(event) => setPostCode(event.target.value)}
               error={postCodeError}
@@ -403,19 +354,19 @@ export default function PersonalInfo(props) {
               <Typography style={styles.privacyStatText}>{t('yes_i_want_good_offers_and_discounts')}</Typography>
               <Box style={styles.methodWrapper}>
                 <Box style={styles.methodBox}>
-                  <MainCheckBox onChange={handleMarketingEmail} checked={customerInfo?.marketingEmail} />
+                  <MainCheckBox onChange={handleMarketingEmail} checked={marketingEmail} />
                   <Typography style={styles.privacyStatText}>{t('email')}</Typography>
                 </Box>
                 <Box style={styles.methodBox}>
-                  <MainCheckBox onChange={handleMarketingMail} checked={customerInfo?.marketingMail} />
+                  <MainCheckBox onChange={handleMarketingMail} checked={marketingMail} />
                   <Typography style={styles.privacyStatText}>{t('mail')}</Typography>
                 </Box>
                 <Box style={styles.methodBox}>
-                  <MainCheckBox onChange={handleMarketingPhone} checked={customerInfo?.marketingPhone} />
+                  <MainCheckBox onChange={handleMarketingPhone} checked={marketingPhone} />
                   <Typography style={styles.privacyStatText}>{t('phone')}</Typography>
                 </Box>
                 <Box style={styles.methodBox}>
-                  <MainCheckBox onChange={handleMarketingMessenger} checked={customerInfo?.marketingMessenger} />
+                  <MainCheckBox onChange={handleMarketingMessenger} checked={marketingMessenger} />
                   <Typography style={styles.privacyStatText}>{t('messenger_service')}</Typography>
                 </Box>
               </Box>
@@ -430,11 +381,7 @@ export default function PersonalInfo(props) {
           variant="contained"
           color="primary"
           size="large"
-          disabled={
-            !(firstName && lastName && email && userPhoneNumber && street && postCode && city && privacyAgreement === true)
-            // ||
-            // (marketingAgreement && !(marketingEmail || marketingMail || marketingPhone || marketingMessenger === true))
-          }
+          disabled={!(firstName && lastName && email && userPhoneNumber && street && postCode && city && privacyAgreement === true)}
         >
           {isLiveConsult ? `${t('request_h_live')}` : `${t('request')}`}
         </MainButton>

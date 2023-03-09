@@ -43,7 +43,7 @@ export default function Reservation({ confirmationResult, handleClose }) {
                   <Typography style={fonts.b2_head_r}>{t('model')}</Typography>
                 </Box>
                 <Box style={styles.infoCardBox}>
-                  <Typography style={fonts.s2}>{vehicleModelInfo?.modelCode}</Typography>
+                  <Typography style={fonts.s2}>{vehicleModelInfo?.modelName}</Typography>
                   {vehicleModelInfo?.modelImage ? <img style={styles.modelImage} src={vehicleModelInfo?.modelImage} alt="vehicle_image" /> : null}
                 </Box>
               </div>

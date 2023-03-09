@@ -1,6 +1,11 @@
 import { color, fonts } from '@theme';
 
 export const styles = {
+  bannerTitle: {
+    ...fonts.h1,
+    marginBottom: '14px',
+  },
+
   contentsContainerWrapper: {
     display: 'flex',
     justifyContent: 'center',
@@ -17,8 +22,8 @@ export const styles = {
   },
 
   vehicleModelImage: {
-    width: '208px',
-    height: '120px',
+    width: '280px',
+    // right: '-70px',
   },
 
   infoTitleText: {

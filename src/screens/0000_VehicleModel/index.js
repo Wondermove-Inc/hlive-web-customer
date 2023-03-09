@@ -24,6 +24,7 @@ export default function VehicleModel(props) {
       // const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getVehicleModels`, { params: { country: 'PL' } });
       const response = await axios.get('http://localhost:4000/viva/apis/hLiveCustomerWeb/getVehicleModels', { params: { country: 'PL' } });
       if (response) {
+        console.log('status', response.status);
         const result = response.data[0].hppModels;
         setHppVehicles(result);
       }

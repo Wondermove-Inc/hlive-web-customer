@@ -18,7 +18,7 @@ import lottie_request from '@lotties/lottie_request.json';
 import AlertPopup from '@components/Alert';
 import moment from 'moment';
 import bookingStore from '@store/zustand/booking.store';
-import { encryptData } from '@store/apps/encrypt';
+import { encryptData } from '@utils';
 import { io } from 'socket.io-client';
 import { baseUrl, wsUrl } from '@config';
 
@@ -34,8 +34,6 @@ export default function LiveConsult() {
   const customerInfo = confirmationResult.requestUser;
   const locationInfo = confirmationResult.location;
 
-  const socket = useRef();
-
   const [secondsInterval, setSecondsInterval] = useState();
   const [isWaiting, setIsWaiting] = useState(true);
   const [isRequestCancelled, setIsRequestCancelled] = useState(false);
@@ -44,7 +42,10 @@ export default function LiveConsult() {
   const { t } = useTranslation();
   const [isModalOpened, setIsModalOpened] = useState(false);
 
-  console.log('rendered', confirmationResult._id, remainingSeconds);
+  console.log('live rendered', confirmationResult);
+  console.log('live chatRoomId', confirmationResult._id);
+
+  const socket = useRef();
 
   useEffect(() => {
     window.addEventListener('beforeunload', alertUser);
@@ -78,7 +79,7 @@ export default function LiveConsult() {
       });
       if (response) {
         const result = response.data.data;
-        console.log('cancel result', response);
+        console.log('cancel result', result);
         setIsRequestCancelled(true);
         setIsModalOpened(true);
       }
@@ -146,6 +147,7 @@ export default function LiveConsult() {
       if (response) {
         console.log('req again', response);
         setConfirmationResult(response.data.data.serviceRequest);
+        setRemainingSeconds(REQUEST_DURATION_IN_SECONDS);
         setIsRequestCancelled(false);
       }
     } catch (error) {
@@ -205,7 +207,7 @@ export default function LiveConsult() {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [confirmationResult._id]);
 
   // 60 SECONDS COUNTDOWN
   useEffect(() => {
@@ -226,17 +228,10 @@ export default function LiveConsult() {
     if (remainingSeconds === 0) {
       clearInterval(secondsInterval);
       console.log('effect trigger');
-      // updateLiveRequest();
+      updateLiveRequest();
     }
     // return () => {};
   }, [remainingSeconds]);
-
-  // const closeModal = () =>
-  //   closeModalScreen.start(() => {
-  //     clearInterval(secondsInterval);
-  //     onCancelRequestPress && onCancelRequestPress();
-  //     setIsRequestLiveConsultModalVisible(false);
-  //   });
 
   return (
     <div style={styles.container}>

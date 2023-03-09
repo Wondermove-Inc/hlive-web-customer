@@ -12,7 +12,7 @@ import Schedule from '@screens/0200_Schedule';
 import PersonalInfo from '@screens/0300_PersonalInfo';
 import Confirmation from '@screens/0430_Confirmation';
 import { styles } from './styles';
-import { color, fonts } from '@theme';
+import { fonts } from '@theme';
 import bookingStore from '@store/zustand/booking.store';
 import moment from 'moment';
 
@@ -23,35 +23,10 @@ export default function Booking() {
   const steps = [t('model'), t('dealership'), t('schedule'), t('personalinfo')];
   const [completed, setCompleted] = useState({});
   const [isLiveConsult, setIsLiveConsult] = useState(false);
-  const convertedBookingDate = moment(selectedBookingDate).format('MMM-DD-YYYY');
+  const convertedBookingDate = moment(selectedBookingDate).format('MMM.DD.YYYY');
 
   const handleStep = (step) => () => {
-    // const newCompleted = completed;
-    // newCompleted[currentStep] = true;
-    // setCompleted(newCompleted);
     setCurrentStep(step);
-  };
-
-  const totalSteps = () => {
-    return steps.length;
-  };
-
-  const completedSteps = () => {
-    return Object.keys(completed).length;
-  };
-
-  const isLastStep = () => {
-    return currentStep === totalSteps() - 1;
-  };
-
-  const allStepsCompleted = () => {
-    return completedSteps() === totalSteps();
-  };
-
-  const handleComplete = () => {
-    const newCompleted = completed;
-    newCompleted[currentStep] = true;
-    setCompleted(newCompleted);
   };
 
   const StepScreens = (props) => {

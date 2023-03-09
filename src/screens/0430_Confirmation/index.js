@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Divider, Typography } from '@mui/material';
 import { styles } from './styles';
@@ -6,24 +7,47 @@ import bookingStore from '@store/zustand/booking.store';
 import Banner from '@components/Banner';
 import { displayString } from '@utils';
 import moment from 'moment';
+import axios from 'axios';
 
 export default function Confirmation() {
-  const { confirmationResult } = bookingStore();
-  console.log(confirmationResult);
-  const vehicleModelInfo = confirmationResult.requestData.data;
-  const dealershipInfo = confirmationResult.dealership;
-  const customerInfo = confirmationResult.requestUser;
-  const bookingDate = moment(confirmationResult.bookingDate).format('MMMM DD, YYYY');
-  const bookingTime = confirmationResult.bookingTime;
+  const { requestResult } = bookingStore();
+  console.log('render & store result', requestResult);
+  const [confirmedInfo, setConfirmedInfo] = useState();
+  const vehicleModelInfo = confirmedInfo.requestData.data;
+  const dealershipInfo = confirmedInfo.dealership;
+  const customerInfo = confirmedInfo.requestUser;
+  const bookingDate = moment(confirmedInfo.bookingDate).format('MMMM DD, YYYY');
+  const bookingTime = confirmedInfo.bookingTime;
+
   const { t } = useTranslation();
+
+  const getAllInfoById = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/getAllInfoById', {
+        id: requestResult,
+      });
+      if (response) {
+        console.log(response);
+        setConfirmedInfo(response.data[0]);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('An error was occured. Please try again');
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    getAllInfoById();
+  }, []);
 
   return (
     <>
       <div>
         <Banner>
-          <Typography style={fonts.h1}>{t('thank_you')}</Typography>
-          <Typography style={fonts.b2_head_r}>{displayString(t('your_reservation_history_email_has_been_sent'), customerInfo.email)}</Typography>
-          <Typography style={fonts.b2_head_r}>{t('we_are_planning_to_send_you_a_reminder_notification')}</Typography>
+          <Typography style={styles.bannerTitle}>{t('thank_you')}</Typography>
+          <Typography style={fonts.b2_head_r}>{t('your_schedule_for_h_live_has_been_delivered')}</Typography>
+          <Typography style={fonts.b2_head_r}>{displayString(t('once_it_is_confirmed'), customerInfo.email)}</Typography>
         </Banner>
       </div>
 
@@ -32,10 +56,10 @@ export default function Confirmation() {
           <div style={styles.confirmInfoCard}>
             <Typography style={fonts.b2_head_m}>{t('model')}</Typography>
             <Divider style={styles.infoDivider} />
-            <div style={styles.infoBox}>
-              <Typography style={fonts.s2}>{vehicleModelInfo?.modelCode}</Typography>
+            <Box style={styles.infoBox}>
+              <Typography style={fonts.s2}>{vehicleModelInfo?.modelName}</Typography>
               {vehicleModelInfo?.modelImage ? <img src={vehicleModelInfo.modelImage} style={styles.vehicleModelImage} alt="vehicle_image" /> : null}
-            </div>
+            </Box>
           </div>
 
           <div style={styles.confirmInfoCard}>

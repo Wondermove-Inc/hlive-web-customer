@@ -37,17 +37,6 @@ export default function TimePicker({ selectedBookingTime, handleTimeClick }) {
             );
           })}
         </ToggleButtonGroup>
-
-        {/* <div style={styles.timeInfoWrapper}>
-          <div style={styles.timeInfoBox}>
-            <div style={styles.recommededTimeIcon}></div>
-            <Typography style={fonts.b1_text_r}>{t('recommended_time')}</Typography>
-          </div>
-          <div style={styles.timeInfoBox}>
-            <div style={styles.alternativeTimeIcon}></div>
-            <Typography style={fonts.b1_text_r}>{t('other_times_available')}</Typography>
-          </div>
-        </div> */}
       </div>
     </>
   );

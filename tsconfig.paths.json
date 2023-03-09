@@ -17,8 +17,7 @@
       "@styles": ["src/styles"],
       "@screens": ["src/screens"],
       "@utils": ["src/utils/utils"],
-      "@theme": ["src/utils/theme"],
-      "@validates": ["src/utils/validates"]
+      "@theme": ["src/utils/theme"]
     }
   }
 }

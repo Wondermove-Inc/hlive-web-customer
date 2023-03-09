@@ -15,7 +15,9 @@ import { HLIVE_SERVER_URI } from '@constants';
 
 export default function Dealership(props) {
   const { currentStep, setCurrentStep, completed, setCompleted } = props;
-  const { setSelectedDealershipInfo } = bookingStore();
+  const { selectedVehicleInfo, setSelectedDealershipInfo } = bookingStore();
+
+  console.log(selectedVehicleInfo);
 
   const [dealershipList, setDealershipList] = useState();
   const [filterOpened, setFilterOpened] = useState(false);
@@ -31,7 +33,6 @@ export default function Dealership(props) {
   const getDealershipByCountry = async () => {
     try {
       // const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getDealershipByCountry`, {
-      //   // EN, PL, SK, NO, CS
       //   params: { country: 'PL' },
       // });
       const response = await axios.get('http://localhost:4000/viva/apis/hLiveCustomerWeb/getDealershipByCountry', {
@@ -40,7 +41,6 @@ export default function Dealership(props) {
       });
       const result = response.data;
       setDealershipList(result);
-      console.log('dealership list', dealershipList);
     } catch (e) {
       console.error(e);
       alert('An error was occured. Please try again');

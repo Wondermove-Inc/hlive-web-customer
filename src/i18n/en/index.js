@@ -37,7 +37,7 @@ export default {
     name: 'Name',
     email: 'Email',
     phone: 'Phone',
-    postcode_dealership_name_city: 'Postcode, Dealership name, City',
+    postcode_dealership_name_city: 'Postcode, Dealership Name and City',
     filter: 'Filter',
     business_hour: 'Business hour',
     open: 'Open',
@@ -79,6 +79,8 @@ export default {
 
     // confirmation
     thank_you: 'Thank You',
+    your_schedule_for_h_live_has_been_delivered: 'Your schedule for H-LIVE has been delivered to the dealership.',
+    once_it_is_confirmed: 'Once it’s confirmed, we will send you an email to the following email address : $',
     your_reservation_history_email_has_been_sent: 'Your reservation history email has been sent to the $ address you entered.',
     we_are_planning_to_send_you_a_reminder_notification:
       'We are planning to send you a reminder notification via the corresponding email on the day.',

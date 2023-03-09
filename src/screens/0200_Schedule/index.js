@@ -8,7 +8,6 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import { MainButton } from '@components/Button';
 import bookingStore from '@store/zustand/booking.store';
 import TimePicker from '@components/TimePicker';
-import DatePicker from '@components/DatePicker';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
@@ -20,8 +19,6 @@ import 'react-calendar/dist/Calendar.css';
 export default function Schedule(props) {
   const { currentStep, setCurrentStep, setIsLiveConsult, completed, setCompleted } = props;
   const { selectedBookingDate, selectedBookingTime, setSelectedBookingDate, setSelectedBookingTime } = bookingStore();
-
-  console.log(selectedBookingDate);
 
   const [selectedDealerInfo, setSelectedDealerInfo] = useState();
   const { t } = useTranslation();
@@ -37,7 +34,6 @@ export default function Schedule(props) {
       });
       const result = response.data;
       setSelectedDealerInfo(result);
-      // console.log(selectedDealerInfo);
     } catch (e) {
       console.error(e);
       alert('An error was occured. Please try again');
@@ -63,7 +59,11 @@ export default function Schedule(props) {
 
   const handleLiveConsultClick = () => {
     setIsLiveConsult(true);
-    // navigate('/personalinfo');
+    setSelectedBookingDate();
+    setSelectedBookingTime();
+    const newCompleted = completed;
+    newCompleted[currentStep] = true;
+    setCompleted(newCompleted);
     setCurrentStep(currentStep + 1);
   };
 

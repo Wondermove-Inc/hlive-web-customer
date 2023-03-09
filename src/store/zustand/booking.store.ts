@@ -74,50 +74,18 @@ interface DealershipType {
   lastModified: string;
 }
 
-interface CustomerInfoType {
-  title: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  userPhoneNumber: string;
-  street: string;
-  houseNumber?: string;
-  postCode: string;
-  city: string;
-  address?: string;
-  comment: string;
-  ipAddress: string;
-  country: string;
-  countryCode: string;
-  language: string;
-  languageCode: string;
-  userType: string;
-  marketingAgreement: boolean;
-  marketingEmail: boolean;
-  marketingMail: boolean;
-  marketingPhone: boolean;
-  marketingMessenger: boolean;
-}
-
 interface initialState {
   selectedVehicleInfo: VehicleModelType;
   selectedDealershipInfo: DealershipType;
   selectedBookingDate: Date;
   selectedBookingTime: string;
-  customerInfo: CustomerInfoType;
-  confirmationResult: any;
+  requestResult: string;
 
   setSelectedVehicleInfo: (vehicleInfo: VehicleModelType) => void;
   setSelectedDealershipInfo: (dealershipInfo: DealershipType) => void;
   setSelectedBookingDate: (bookingDate: Date) => void;
   setSelectedBookingTime: (bookingTime: string) => void;
-  setCustomerInfo: (customerInfo: CustomerInfoType) => void;
-  setMarketingAgreement: (marketingAgreement: boolean) => void;
-  setMarketingEmail: (marketingEmail: boolean) => void;
-  setMarketingMail: (marketingMail: boolean) => void;
-  setMarketingPhone: (marketingPhone: boolean) => void;
-  setMarketingMessenger: (marketingMessenger: boolean) => void;
-  // setConfirmationResult: (confirmationResult: object) => void;
+  setRequestResult: (requestId: string) => void;
 }
 
 const bookingStore = create<initialState>((set) => ({
@@ -222,39 +190,8 @@ const bookingStore = create<initialState>((set) => ({
   setSelectedBookingDate: (bookingDateInfo) => set(() => ({ selectedBookingDate: bookingDateInfo })),
   setSelectedBookingTime: (bookingTimeInfo) => set(() => ({ selectedBookingTime: bookingTimeInfo })),
 
-  customerInfo: {
-    title: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    userPhoneNumber: '',
-    street: '',
-    houseNumber: '',
-    postCode: '',
-    city: '',
-    address: '',
-    comment: '',
-    ipAddress: '',
-    country: '',
-    countryCode: '',
-    language: '',
-    languageCode: '',
-    userType: 'GUEST',
-    marketingAgreement: false,
-    marketingEmail: false,
-    marketingMail: false,
-    marketingPhone: false,
-    marketingMessenger: false,
-  },
-  setCustomerInfo: (personalInfo) => set(() => ({ customerInfo: personalInfo })),
-  setMarketingAgreement: (result) => set((state) => ({ customerInfo: { ...state.customerInfo, marketingAgreement: result } })),
-  setMarketingEmail: (marketingEmail) => set((state) => ({ customerInfo: { ...state.customerInfo, marketingEmail } })),
-  setMarketingMail: (marketingMail) => set((state) => ({ customerInfo: { ...state.customerInfo, marketingMail } })),
-  setMarketingPhone: (marketingPhone) => set((state) => ({ customerInfo: { ...state.customerInfo, marketingPhone } })),
-  setMarketingMessenger: (marketingMessenger) => set((state) => ({ customerInfo: { ...state.customerInfo, marketingMessenger } })),
-
-  confirmationResult: {},
-  setConfirmationResult: (data) => set(() => ({ confirmationResult: data })),
+  requestResult: '',
+  setRequestResult: (id) => set(() => ({ requestResult: id })),
 }));
 
 export default bookingStore;
