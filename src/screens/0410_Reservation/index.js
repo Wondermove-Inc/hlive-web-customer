@@ -9,12 +9,8 @@ import { fonts } from '@theme';
 import TimePicker from '@components/TimePicker';
 import { MainButton } from '@components/Button';
 
-export default function Reservation({ confirmationResult, handleClose }) {
+export default function Reservation({ vehicleModelInfo, dealershipInfo, customerInfo, handleClose }) {
   const { t } = useTranslation();
-  const vehicleModelInfo = confirmationResult.requestData.data;
-  const dealershipInfo = confirmationResult.dealership;
-  const customerInfo = confirmationResult.requestUser;
-
   const [dealershipAvailable, setDealershipAvailable] = useState(true);
 
   return (

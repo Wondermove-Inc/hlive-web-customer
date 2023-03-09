@@ -25,14 +25,15 @@ import { baseUrl, wsUrl } from '@config';
 const REQUEST_DURATION_IN_SECONDS = 60;
 const ONE_SECOND = 1000;
 
-const SOCKET_URL = wsUrl; // 'http://wondermove.kr/viva'
+const SOCKET_URL = wsUrl;
 
 export default function LiveConsult() {
-  const { confirmationResult, setConfirmationResult } = bookingStore();
-  const vehicleModelInfo = confirmationResult.requestData.data;
-  const dealershipInfo = confirmationResult.dealership;
-  const customerInfo = confirmationResult.requestUser;
-  const locationInfo = confirmationResult.location;
+  const { requestResult, setRequestResult } = bookingStore();
+  console.log('live rendered & store result', requestResult);
+  const [confirmedInfo, setConfirmedInfo] = useState();
+  const vehicleModelInfo = confirmedInfo?.requestData.data;
+  const dealershipInfo = confirmedInfo?.dealership;
+  const customerInfo = confirmedInfo?.requestUser;
 
   const [secondsInterval, setSecondsInterval] = useState();
   const [isWaiting, setIsWaiting] = useState(true);
@@ -41,9 +42,6 @@ export default function LiveConsult() {
   const [remainingSeconds, setRemainingSeconds] = useState(REQUEST_DURATION_IN_SECONDS);
   const { t } = useTranslation();
   const [isModalOpened, setIsModalOpened] = useState(false);
-
-  console.log('live rendered', confirmationResult);
-  console.log('live chatRoomId', confirmationResult._id);
 
   const socket = useRef();
 
@@ -60,9 +58,29 @@ export default function LiveConsult() {
     e.returnValue = '';
   };
 
+  const getAllInfoById = async () => {
+    try {
+      const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/getAllInfoById', {
+        id: requestResult,
+      });
+      if (response) {
+        console.log(response);
+        setConfirmedInfo(response.data[0]);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('An error was occured. Please try again');
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    getAllInfoById();
+  }, []);
+
   const updateLiveRequest = async () => {
     const data = {
-      requestId: confirmationResult._id,
+      requestId: requestResult._id,
       requestStatus: 'CANCELLED',
     };
     const userId = customerInfo.userId;
@@ -111,9 +129,8 @@ export default function LiveConsult() {
         languageCode: 'EN',
         userType: 'GUEST',
         mobile: customerInfo.userPhoneNumber,
-        marketingAgreement: customerInfo.marketingAgreement,
       },
-      location: locationInfo,
+      location: confirmedInfo.location,
       country: 'PL',
       bookingDate: '',
       bookingTime: '',
@@ -146,7 +163,7 @@ export default function LiveConsult() {
       });
       if (response) {
         console.log('req again', response);
-        setConfirmationResult(response.data.data.serviceRequest);
+        setRequestResult(response.data.data.serviceRequest);
         setRemainingSeconds(REQUEST_DURATION_IN_SECONDS);
         setIsRequestCancelled(false);
       }
@@ -207,7 +224,7 @@ export default function LiveConsult() {
     return () => {
       clearInterval(timer);
     };
-  }, [confirmationResult._id]);
+  }, [requestResult._id]);
 
   // 60 SECONDS COUNTDOWN
   useEffect(() => {
@@ -264,7 +281,7 @@ export default function LiveConsult() {
         <Typography style={styles.subtitle}>{t('request_live_consult')}</Typography>
         <Box style={styles.vehicleModelBox}>
           <Lottie animationData={lottie_request} style={styles.lottieImage} loop={true} />
-          <img src={vehicleModelInfo.modelImage} style={styles.modelImage} alt={'image_waiting_consult'} />
+          <img src={vehicleModelInfo?.modelImage} style={styles.modelImage} alt={'image_waiting_consult'} />
         </Box>
 
         {isRequestCancelled ? (
@@ -288,7 +305,7 @@ export default function LiveConsult() {
 
         <Modal open={isModalOpened} onClose={setIsModalOpened}>
           <Box style={styles.modalContainer}>
-            <Reservation confirmationResult={confirmationResult} handleClose={handleClose} />
+            <Reservation vehicleModelInfo={vehicleModelInfo} dealershipInfo={dealershipInfo} customerInfo={customerInfo} handleClose={handleClose} />
           </Box>
         </Modal>
       </div>

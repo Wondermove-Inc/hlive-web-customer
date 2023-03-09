@@ -13,12 +13,11 @@ export default function Confirmation() {
   const { requestResult } = bookingStore();
   console.log('render & store result', requestResult);
   const [confirmedInfo, setConfirmedInfo] = useState();
-  const vehicleModelInfo = confirmedInfo.requestData.data;
-  const dealershipInfo = confirmedInfo.dealership;
-  const customerInfo = confirmedInfo.requestUser;
-  const bookingDate = moment(confirmedInfo.bookingDate).format('MMMM DD, YYYY');
-  const bookingTime = confirmedInfo.bookingTime;
-
+  const vehicleModelInfo = confirmedInfo?.requestData.data;
+  const dealershipInfo = confirmedInfo?.dealership;
+  const customerInfo = confirmedInfo?.requestUser;
+  const bookingDate = moment(confirmedInfo?.bookingDate).format('MMMM DD, YYYY');
+  const bookingTime = confirmedInfo?.bookingTime;
   const { t } = useTranslation();
 
   const getAllInfoById = async () => {
@@ -47,7 +46,7 @@ export default function Confirmation() {
         <Banner>
           <Typography style={styles.bannerTitle}>{t('thank_you')}</Typography>
           <Typography style={fonts.b2_head_r}>{t('your_schedule_for_h_live_has_been_delivered')}</Typography>
-          <Typography style={fonts.b2_head_r}>{displayString(t('once_it_is_confirmed'), customerInfo.email)}</Typography>
+          <Typography style={fonts.b2_head_r}>{displayString(t('once_it_is_confirmed'), customerInfo?.email)}</Typography>
         </Banner>
       </div>
 
@@ -67,19 +66,19 @@ export default function Confirmation() {
             <Divider style={styles.infoDivider} />
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('dealership_name')}</Typography>
-              <Typography style={fonts.b1_text_m}>{dealershipInfo.dealershipName}</Typography>
+              <Typography style={fonts.b1_text_m}>{dealershipInfo?.dealershipName}</Typography>
             </Box>
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('address')}</Typography>
-              <Typography style={fonts.b1_text_m}>{dealershipInfo.dealershipAddress}</Typography>
+              <Typography style={fonts.b1_text_m}>{dealershipInfo?.dealershipAddress}</Typography>
             </Box>
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('telephone')}</Typography>
-              <Typography style={fonts.b1_text_m}>{dealershipInfo.dealershipTelephone}</Typography>
+              <Typography style={fonts.b1_text_m}>{dealershipInfo?.dealershipTelephone}</Typography>
             </Box>
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('email')}</Typography>
-              <Typography style={fonts.b1_text_m}>{dealershipInfo.representativeEmail}</Typography>
+              <Typography style={fonts.b1_text_m}>{dealershipInfo?.representativeEmail}</Typography>
             </Box>
           </div>
 
@@ -99,19 +98,19 @@ export default function Confirmation() {
             <Divider style={styles.infoDivider} />
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('name')}</Typography>
-              <Typography style={fonts.b1_text_m}>{`${customerInfo.firstName} ${customerInfo.lastName}`}</Typography>
+              <Typography style={fonts.b1_text_m}>{`${customerInfo?.firstName} ${customerInfo?.lastName}`}</Typography>
             </Box>
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('email')}</Typography>
-              <Typography style={fonts.b1_text_m}>{customerInfo.email}</Typography>
+              <Typography style={fonts.b1_text_m}>{customerInfo?.email}</Typography>
             </Box>
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('phone')}</Typography>
-              <Typography style={fonts.b1_text_m}>{customerInfo.userPhoneNumber}</Typography>
+              <Typography style={fonts.b1_text_m}>{customerInfo?.userPhoneNumber}</Typography>
             </Box>
             <Box style={styles.infoBox}>
               <Typography style={styles.infoTitleText}>{t('comments')}</Typography>
-              <Typography style={fonts.b1_text_m}>{customerInfo.comment}</Typography>
+              <Typography style={fonts.b1_text_m}>{customerInfo?.comment}</Typography>
             </Box>
           </div>
         </div>

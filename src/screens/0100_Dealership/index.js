@@ -17,8 +17,6 @@ export default function Dealership(props) {
   const { currentStep, setCurrentStep, completed, setCompleted } = props;
   const { selectedVehicleInfo, setSelectedDealershipInfo } = bookingStore();
 
-  console.log(selectedVehicleInfo);
-
   const [dealershipList, setDealershipList] = useState();
   const [filterOpened, setFilterOpened] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
@@ -36,7 +34,6 @@ export default function Dealership(props) {
       //   params: { country: 'PL' },
       // });
       const response = await axios.get('http://localhost:4000/viva/apis/hLiveCustomerWeb/getDealershipByCountry', {
-        // EN, PL, SK, NO, CS
         params: { country: 'PL' },
       });
       const result = response.data;

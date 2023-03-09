@@ -10,7 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { HLIVE_SERVER_URI } from '@constants';
 
 export default function VehicleModel(props) {
-  const { currentStep, setCurrentStep, handleStep, completed, setCompleted } = props;
+  const { currentStep, setCurrentStep, completed, setCompleted } = props;
   const { setSelectedVehicleInfo } = bookingStore();
 
   const carType = ['Hatchback', 'SUV', 'Fastback', 'Sedan', 'Wagon'];
@@ -55,7 +55,6 @@ export default function VehicleModel(props) {
   return (
     <>
       <Subtitle title={t('select_a_model')} />
-
       <div>
         {allVehicles &&
           Object.entries(allVehicles).map((item, index) => {
