@@ -9,15 +9,16 @@ import TuneIcon from '@mui/icons-material/Tune';
 import { fonts, color } from '@theme';
 import Subtitle from '@components/Subtitle';
 import DealershipInfoModal from '@components/DealershipInfoModal';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import { useNavigate } from 'react-router-dom';
 import { HLIVE_SERVER_URI } from '@constants';
 
 export default function Dealership(props) {
+  //                                                            VARIABLE
   const { currentStep, setCurrentStep, completed, setCompleted } = props;
-  const { selectedVehicleInfo, setSelectedDealershipInfo } = bookingStore();
+  const { setSelectedDealershipInfo } = bookingStore();
 
-  const [dealershipList, setDealershipList] = useState();
+  const [dealershipList, setDealershipList] = useState([]);
   const [filterOpened, setFilterOpened] = useState(false);
   const [modalOpened, setModalOpened] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -28,12 +29,10 @@ export default function Dealership(props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  //                                                              FUNCTIONS
   const getDealershipByCountry = async () => {
     try {
-      // const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getDealershipByCountry`, {
-      //   params: { country: 'PL' },
-      // });
-      const response = await axios.get('http://localhost:4000/viva/apis/hLiveCustomerWeb/getDealershipByCountry', {
+      const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getDealershipByCountry`, {
         params: { country: 'PL' },
       });
       const result = response.data;
@@ -48,6 +47,8 @@ export default function Dealership(props) {
   useEffect(() => {
     getDealershipByCountry();
   }, []);
+
+  console.log('dealership', dealershipList);
 
   // useEffect(() => {
   //   scrollRef?.current?.scrollTo(0, scrollRef.current.scrollHeight);
@@ -93,11 +94,12 @@ export default function Dealership(props) {
     setCurrentStep(currentStep + 1);
   };
 
+  //                                                             RENDER
   return (
     <>
       <Subtitle title={t('select_a_dealer')} />
       <div style={styles.container}>
-        <div style={styles.searchFilterContainer}>
+        <Box sx={styles.searchFilterContainer}>
           <TextField
             onChange={handleChange}
             sx={styles.searchBar}
@@ -124,7 +126,7 @@ export default function Dealership(props) {
           />
 
           {filterOpened ? (
-            <div style={styles.filterPopup}>
+            <Box sx={styles.filterPopup}>
               <Typography style={fonts.c2}>{t('business_hour')}</Typography>
               <Box style={styles.filterOption}>
                 <Checkbox disableRipple style={styles.checkBox} {...label} size="small" />
@@ -134,7 +136,7 @@ export default function Dealership(props) {
                 <Checkbox disableRipple style={styles.checkBox} {...label} size="small" />
                 <Typography style={fonts.cta2}>{t('closed')}</Typography>
               </Box>
-            </div>
+            </Box>
           ) : null}
 
           <div style={styles.dealershipWrapper}>
@@ -157,9 +159,9 @@ export default function Dealership(props) {
               </div>
             )}
           </div>
-        </div>
+        </Box>
 
-        <div style={styles.mapContainer}>
+        <Box sx={styles.mapContainer}>
           <DealershipMap ref={hMapRef} dealershipList={dealershipList} modalDealershipInfo={modalDealershipInfo} handleModalOpen={handleModalOpen} />
           {modalOpened ? (
             <DealershipInfoModal
@@ -171,7 +173,7 @@ export default function Dealership(props) {
               handleClick={() => handleClick(modalDealershipInfo)}
             />
           ) : null}
-        </div>
+        </Box>
       </div>
     </>
   );

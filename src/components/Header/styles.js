@@ -74,10 +74,26 @@ export const styles = {
     height: icon_size.icon_20,
   },
 
-  countryOptionText: {
+  countryButton: {
     ...fonts.b2_head_r,
     // padding: '8px 0',
     borderRadius: 0,
+    // color: color.secondary_active_blue,
     borderBottom: `1px solid ${color.grey_200}`,
+    '&:hover': {
+      color: color.primary_blue,
+    },
+  },
+
+  countryText: {
+    '&:hover': {
+      color: color.primary_blue,
+    },
+
+    '&.Mui-disabled, &.Mui-disabled:hover': {
+      background: color.grey_200,
+      border: `1px solid ${color.grey_200} !important`,
+      color: color.grey_700,
+    },
   },
 };

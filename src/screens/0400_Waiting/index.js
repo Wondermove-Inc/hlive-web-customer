@@ -12,12 +12,14 @@ import { MainButton } from '@components/Button';
 import { styles } from './styles';
 
 export default function Waiting({ confirmationInfo }) {
+  //                                                             VARIABLE
   const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
 
+  //                                                              FUNCTIONS
   // // * mount 시 modal 올라가게 하기
   // useEffect(() => {
   //   openModalScreen.start();
@@ -90,6 +92,7 @@ export default function Waiting({ confirmationInfo }) {
     };
   }, []);
 
+  //                                                             RENDER
   return (
     <>
       <div style={styles.container}>

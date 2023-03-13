@@ -6,34 +6,35 @@ import { fonts } from '@theme';
 import Subtitle from '@components/Subtitle';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 import { MainButton } from '@components/Button';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import TimePicker from '@components/TimePicker';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { HLIVE_SERVER_URI } from '@constants';
 // import './styles.css';
-// import { HLIVE_SERVER_URI } from '@constants';
 
 export default function Schedule(props) {
+  //                                                             VARIABLE
   const { currentStep, setCurrentStep, setIsLiveConsult, completed, setCompleted } = props;
   const { selectedBookingDate, selectedBookingTime, setSelectedBookingDate, setSelectedBookingTime } = bookingStore();
+  const convertedBookingData = moment(selectedBookingDate).format('YYYY-MM-DD');
+  const [selectedDealerSchedule, setSelectedDealerSchedule] = useState([]);
+  console.log('schedule render', convertedBookingData);
 
-  const [selectedDealerInfo, setSelectedDealerInfo] = useState();
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  //                                                              FUNCTIONS
   const getReservationInfoByDealer = async () => {
     try {
-      // const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getReservationInfoByDealer`, {
-      //   params: { dealerCode: 'HMP0002' },
-      // });
-      const response = await axios.get('http://localhost:4000/viva/apis/hLiveCustomerWeb/getReservationInfoByDealer', {
-        params: { dealerCode: 'HMP0002' },
+      const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getReservationInfoByDealer`, {
+        params: { dealerCode: 'HMP0003', date: convertedBookingData },
       });
-      const result = response.data;
-      setSelectedDealerInfo(result);
+      const result = response.data.time;
+      setSelectedDealerSchedule(result);
     } catch (e) {
       console.error(e);
       alert('An error was occured. Please try again');
@@ -43,11 +44,11 @@ export default function Schedule(props) {
 
   useEffect(() => {
     getReservationInfoByDealer();
-  }, []);
+  }, [convertedBookingData]);
 
-  const handleTimeClick = (timeInfo) => {
-    setSelectedBookingTime(timeInfo);
-  };
+  console.log('API call -->', selectedDealerSchedule);
+  console.log('API call -->', selectedBookingDate);
+  console.log('API call -->', selectedBookingTime);
 
   const handleRequestClick = () => {
     setIsLiveConsult(false);
@@ -67,11 +68,21 @@ export default function Schedule(props) {
     setCurrentStep(currentStep + 1);
   };
 
-  const handleDateClick = (dateInfo) => {
+  const handleDateClick = async (dateInfo) => {
     console.log(dateInfo);
+    const response = await axios.get(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getReservationInfoByDealer`, {
+      params: { dealerCode: 'HMP0003', date: convertedBookingData },
+    });
+    console.log('click -->', response);
     setSelectedBookingDate(dateInfo);
   };
 
+  const handleTimeClick = (timeInfo) => {
+    console.log('time click', timeInfo);
+    setSelectedBookingTime(timeInfo);
+  };
+
+  //                                                             RENDER
   return (
     <>
       <Subtitle title={t('select_date_and_time')} />
@@ -100,7 +111,11 @@ export default function Schedule(props) {
           <Box style={styles.timeSelectTitle}>
             <Typography style={fonts.h3_head_m}>{t('select_time')}</Typography>
           </Box>
-          <TimePicker selectedBookingTime={selectedBookingTime} handleTimeClick={(event) => handleTimeClick(event.target.value)} />
+          <TimePicker
+            selectedDealerSchedule={selectedDealerSchedule}
+            selectedBookingTime={selectedBookingTime}
+            handleTimeClick={(event) => handleTimeClick(event.target.value)}
+          />
         </div>
       </div>
 

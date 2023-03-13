@@ -75,8 +75,8 @@ import axios from 'axios';
 import { SERVER_URI } from '@constants';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import useRequestStore from '@store/zustand/request.store';
-import useTokenStore from '@store/zustand/token.store';
+import useRequestStore from '@store/request.store';
+import useTokenStore from '@store/token.store';
 import { encryptData } from '@utils';
 
 import useRtc from '@hooks/useRtc';

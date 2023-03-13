@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Button, Divider, IconButton, LinearProgress, Modal, Typography } from '@mui/material';
@@ -7,6 +7,7 @@ import ConsultTimeChecker from '@components/TimeChecker';
 import { useTranslation } from 'react-i18next';
 import { styles } from './styles';
 import { color } from '@theme';
+import image_empty_car from '@images/image_empty_car.png';
 import CloseIcon from '@mui/icons-material/Close';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EastIcon from '@mui/icons-material/East';
@@ -17,19 +18,18 @@ import Lottie from 'lottie-react';
 import lottie_request from '@lotties/lottie_request.json';
 import AlertPopup from '@components/Alert';
 import moment from 'moment';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import { encryptData } from '@utils';
-import { io } from 'socket.io-client';
-import { baseUrl, wsUrl } from '@config';
+import io, { Manager, Socket } from 'socket.io-client';
+import { SOCKET_URI, SOCKET_NAMESPACE, WEBRTC_URI, WEBRTC_SLAVE_URI, WEBRTC_PORT, WEBRTC_ROOM_URI, WEBRTC_PATH, HLIVE_SERVER_URI } from '@constants';
 
 const REQUEST_DURATION_IN_SECONDS = 60;
 const ONE_SECOND = 1000;
 
-const SOCKET_URL = wsUrl;
-
 export default function LiveConsult() {
+  //                                                            VARIABLE
   const { requestResult, setRequestResult } = bookingStore();
-  console.log('live rendered & store result', requestResult);
+  const _id = requestResult;
   const [confirmedInfo, setConfirmedInfo] = useState();
   const vehicleModelInfo = confirmedInfo?.requestData.data;
   const dealershipInfo = confirmedInfo?.dealership;
@@ -42,9 +42,12 @@ export default function LiveConsult() {
   const [remainingSeconds, setRemainingSeconds] = useState(REQUEST_DURATION_IN_SECONDS);
   const { t } = useTranslation();
   const [isModalOpened, setIsModalOpened] = useState(false);
+  const [isConsultVisible, setIsConsultVisible] = useState(false);
 
-  const socket = useRef();
+  const [socketInstance, setSocketInstance] = useState();
+  const [socketLoaded, setSocketLoaded] = useState(false);
 
+  //                                                              FUNCTIONS
   useEffect(() => {
     window.addEventListener('beforeunload', alertUser);
     return () => {
@@ -61,11 +64,11 @@ export default function LiveConsult() {
   const getAllInfoById = async () => {
     try {
       const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/getAllInfoById', {
-        id: requestResult,
+        id: _id,
       });
       if (response) {
-        console.log(response);
         setConfirmedInfo(response.data[0]);
+        console.log('getAllInfo', confirmedInfo);
       }
     } catch (e) {
       console.error(e);
@@ -76,22 +79,23 @@ export default function LiveConsult() {
 
   useEffect(() => {
     getAllInfoById();
-  }, []);
+  }, [requestResult]);
 
   const updateLiveRequest = async () => {
     const data = {
-      requestId: requestResult._id,
+      requestId: _id,
       requestStatus: 'CANCELLED',
     };
-    const userId = customerInfo.userId;
-    const userType = customerInfo.userId;
-    const countryCode = customerInfo.countryCode;
 
-    const user = { userId, userType, countryCode };
+    const user = {
+      userId: customerInfo.userId,
+      userType: customerInfo.userType,
+      countryCode: customerInfo.countryCode,
+    };
     const encryptedBody = await encryptData(data);
 
     try {
-      const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/updateServiceRequest', {
+      const response = await axios.post(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/updateServiceRequest`, {
         encryptedBody,
         user,
       });
@@ -155,15 +159,14 @@ export default function LiveConsult() {
       },
       dealership: dealershipInfo,
     };
-
     const encryptedBody = await encryptData(req);
     try {
-      const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/createHLiveRequest', {
+      const response = await axios.post(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/createHLiveRequest`, {
         encryptedBody,
       });
       if (response) {
-        console.log('req again', response);
-        setRequestResult(response.data.data.serviceRequest);
+        setRequestResult(response.data.data.serviceRequest._id);
+        console.log('new request --> ', requestResult);
         setRemainingSeconds(REQUEST_DURATION_IN_SECONDS);
         setIsRequestCancelled(false);
       }
@@ -175,42 +178,69 @@ export default function LiveConsult() {
   const handleClose = () => setIsModalOpened(false);
 
   // SOCKET
-  // const acceptListener = async ({ consultId, sender, receiver, chatRoomId }) => {
-  //   console.log('🚀acceptListener ~ chatRoomId', chatRoomId, sender, receiver, chatRoomId);
-  //   // closeModalScreen.start();
-  //   dealerOnAccept(consultId, sender, receiver, chatRoomId);
-  // };
+  // const socketInitializer = async (_id) => {
 
-  // const socketInitializer = async () => {
-  //   const { requestId, userId } = requestInfo;
-  //   socket.current = io(SOCKET_URL, {
-  //     transports: ['websocket'],
+  //   const manager = new Manager(SOCKET_URI, { transports: ['websocket'] });
+  //   const socket = manager.socket(SOCKET_NAMESPACE);
+  //   console.log('socket', socket);
+
+  //   socket.on('connect', () => {
+  //     console.log(`socket join, { roomId: ${_id}, sender: 'DEALER' }`);
+  //     socket.emit('join', { roomId: _id, sender: 'DEALER' });
+  //     console.log('socket joined');
+  //     setSocketLoaded(true);
   //   });
 
-  //   socket.current.on('connect', () => {
-  //     socket.current.emit('join', { roomId: requestId, sender: userId });
-  //     console.log("🚀 ~ file: index.js ~ line 447 ~ socket.current.on ~ 'connect'", socket.current.connected);
-  //   });
-
-  //   socket.current.on('accept', acceptListener);
+  //   setSocketInstance(socket);
+  //   return socket;
   // };
 
   // useEffect(() => {
-  //   if (isVisible && socket.current == null) {
-  //     socketInitializer();
-  //   } else if (isVisible && socket.current != null) {
-  //     socket.current.connect();
+  //   let socket;
+  //   if (_id) {
+  //     console.log('socket on');
+  //     (async () => {
+  //       if (_id) {
+  //         socket = await socketInitializer(_id);
+  //       }
+  //     })();
   //   }
+  //   return () => {
+  //     console.log('socket off');
+  //     if (socket) {
+  //       socket.disconnect();
+  //       setSocketLoaded(false);
+  //     }
+  //   };
+  // }, [_id]);
+
+  // useEffect(() => {
+  //   const manager = new Manager(SOCKET_URI, { transports: ['websocket'] });
+  //   const socket = manager.socket(SOCKET_NAMESPACE);
+  //   console.log('🚀 effect: acceptListener');
+
+  //   socket.on('accept', () => {
+  //     socket.emit('join', {
+  //       consultId: _id,
+  //       sender: 'DEALER',
+  //       receiver: 'CUSTOMER',
+  //       chatRoomId: _id,
+  //     });
+  //   });
+
+  //   setIsConsultVisible(true);
+  //   console.log('accept listener set visible', isConsultVisible);
 
   //   return () => {
-  //     console.log('off');
-  //     socket.current.off('accept', acceptListener);
-  //     socket.current.disconnect();
-  //     socket.current = null;
+  //     console.log('socket off');
+  //     if (socket) {
+  //       socket.disconnect();
+  //       setSocketLoaded(false);
+  //     }
   //   };
-  // }, [isVisible]);
+  // }, [socketInstance, _id]);
 
-  // PROGRESS BAR
+  // Progress bar Animation
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
@@ -224,9 +254,9 @@ export default function LiveConsult() {
     return () => {
       clearInterval(timer);
     };
-  }, [requestResult._id]);
+  }, []);
 
-  // 60 SECONDS COUNTDOWN
+  // 60 seconds countdown
   useEffect(() => {
     const interval = setInterval(() => {
       setRemainingSeconds((prevRemainingSeconds) => prevRemainingSeconds - 1);
@@ -244,12 +274,12 @@ export default function LiveConsult() {
   useEffect(() => {
     if (remainingSeconds === 0) {
       clearInterval(secondsInterval);
-      console.log('effect trigger');
       updateLiveRequest();
     }
     // return () => {};
   }, [remainingSeconds]);
 
+  //                                                             RENDER
   return (
     <div style={styles.container}>
       <div style={styles.headerWrapper}>
@@ -275,13 +305,18 @@ export default function LiveConsult() {
         </div>
       </div>
 
-      {/* {chatRoomId ? <Consulting chatRoomId={chatRoomId} /> : null} */}
+      {/* {_id ? <Consulting chatRoomId={_id} confirmedInfo={confirmedInfo} /> : null} */}
+      {/* {isConsultVisible && _id ? <Consulting chatRoomId={_id} confirmedInfo={confirmedInfo} /> : null} */}
 
       <div style={styles.contentsContainer}>
         <Typography style={styles.subtitle}>{t('request_live_consult')}</Typography>
         <Box style={styles.vehicleModelBox}>
           <Lottie animationData={lottie_request} style={styles.lottieImage} loop={true} />
-          <img src={vehicleModelInfo?.modelImage} style={styles.modelImage} alt={'image_waiting_consult'} />
+          {vehicleModelInfo?.modelImage ? (
+            <img src={vehicleModelInfo.modelImage} style={styles.modelImage} alt="vehicle_image" />
+          ) : (
+            <img src={image_empty_car} style={styles.emptyModelImage} alt="empty_vehicle_image" />
+          )}
         </Box>
 
         {isRequestCancelled ? (

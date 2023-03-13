@@ -109,6 +109,14 @@ export const styles = {
     left: '0px',
   },
 
+  emptyModelImage: {
+    width: '350px',
+    zIndex: 1,
+    position: 'absolute',
+    // bottom: '-20px',
+    // left: '0px',
+  },
+
   lottieImage: {
     position: 'absolute',
     bottom: 0,

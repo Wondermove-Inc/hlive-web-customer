@@ -8,7 +8,7 @@ import { fonts } from '@theme';
 import { useTranslation } from 'react-i18next';
 import { MainButton } from '@components/Button';
 import { styles } from './styles';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 
 export default function DealershipInfoModal(props) {
   const { selectedDealershipInfo, setSelectedDealershipInfo } = bookingStore();

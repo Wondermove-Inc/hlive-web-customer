@@ -1,4 +1,4 @@
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import moment from 'moment';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';

@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { Box, Icon, IconButton, Typography } from '@mui/material';
 import LiveConsultChat from '@components/Chatting';
 import { styles } from './styles';
-import HLiveLiveConsultDialog from '@components/HLive/HLiveLiveConsultDialog';
-import useRequestStore from '@store/zustand/request.store';
+import HLiveLiveConsultDialog from '@components/HLiveLiveConsultDialog';
+import useRequestStore from '@store/request.store';
 
-export default function Consulting({ chatRoomId }) {
-  console.log('--> consulting comp', chatRoomId);
+export default function Consulting({ chatRoomId, confirmedInfo }) {
+  //                                                             VARIABLE
+  console.log('--> consulting rendered', chatRoomId);
   const [HLiveliveModalVisible, setHLiveLiveModalVisible] = useState(true);
   console.log('consulting screen', HLiveliveModalVisible);
-  // const { requestDetail, setRequestDetail, requestAll, resetRequestDetail } = useRequestStore();
 
   const [requestDetail, setRequestDetail] = useState({
     _id: chatRoomId,
@@ -141,16 +141,16 @@ export default function Consulting({ chatRoomId }) {
     callCondition: 'WAITING',
   });
 
+  //                                                             RENDER
   return (
     <>
       <div style={styles.container}>
         <Box style={styles.screenContainer}>
-          {/* <Typography>Connecting video...</Typography> */}
-
           <HLiveLiveConsultDialog
             modalOpenYn={HLiveliveModalVisible}
             setModalOpenYn={setHLiveLiveModalVisible}
-            chat={requestDetail}
+            chat={confirmedInfo}
+            // chat={requestDetail}
           ></HLiveLiveConsultDialog>
         </Box>
 

@@ -1,38 +1,16 @@
 import { useEffect, useState } from 'react';
 import { ToggleButtonGroup } from '@mui/material';
 import { TimeToggleButton, styles } from './styles';
-import moment from 'moment';
 
-export default function TimePicker({ selectedBookingTime, handleTimeClick }) {
-  const [availableTime, setAvailableTime] = useState([]);
-
-  const createAvailableTimeArray = () => {
-    const openHour = moment('09:00', 'HH:mm');
-    const closeHour = moment('18:00', 'HH:mm');
-    const duration = moment.duration(closeHour.diff(openHour));
-    const diff = duration.hours();
-    const timeOptionArray = [];
-
-    for (let i = 0; diff >= i; i++) {
-      let result = moment(openHour).add(i, 'hours').format('HH:mm');
-      timeOptionArray.push(result);
-    }
-    setAvailableTime(timeOptionArray);
-  };
-
-  useEffect(() => {
-    createAvailableTimeArray();
-  }, []);
-
+export default function TimePicker({ selectedDealerSchedule, selectedBookingTime, handleTimeClick }) {
   return (
     <>
       <div style={styles.selectTimeBox}>
         <ToggleButtonGroup exclusive value={selectedBookingTime} style={styles.timeButtonWrapper}>
-          {availableTime?.map((timeOption, index) => {
-            const disabled = false;
+          {selectedDealerSchedule?.map((timeOption, index) => {
             return (
-              <TimeToggleButton onClick={handleTimeClick} value={timeOption} disabled={disabled} key={index}>
-                {timeOption}
+              <TimeToggleButton onClick={handleTimeClick} value={timeOption} disabled={!timeOption.isAble} key={index}>
+                {timeOption.time}
               </TimeToggleButton>
             );
           })}

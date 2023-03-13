@@ -3,13 +3,15 @@ import { useTranslation } from 'react-i18next';
 import { Box, Divider, Typography } from '@mui/material';
 import { styles } from './styles';
 import { fonts } from '@theme';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import Banner from '@components/Banner';
 import { displayString } from '@utils';
 import moment from 'moment';
 import axios from 'axios';
+import { HLIVE_SERVER_URI, SERVER_URI } from '@constants';
 
 export default function Confirmation() {
+  //                                                             VARIABLE
   const { requestResult } = bookingStore();
   console.log('render & store result', requestResult);
   const [confirmedInfo, setConfirmedInfo] = useState();
@@ -20,11 +22,16 @@ export default function Confirmation() {
   const bookingTime = confirmedInfo?.bookingTime;
   const { t } = useTranslation();
 
+  //                                                              FUNCTIONS
   const getAllInfoById = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/getAllInfoById', {
+      // const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/getAllInfoById', {
+      //   id: requestResult,
+      // });
+      const response = await axios.post(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/getAllInfoById`, {
         id: requestResult,
       });
+
       if (response) {
         console.log(response);
         setConfirmedInfo(response.data[0]);
@@ -40,6 +47,7 @@ export default function Confirmation() {
     getAllInfoById();
   }, []);
 
+  //                                                             RENDER
   return (
     <>
       <div>

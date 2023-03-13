@@ -1,23 +1,21 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@": ["./src"],
-      "@assets": ["src/assets"],
-      "@components": ["src/components"],
-      "@constants": ["src/constants"],
-      "@config": ["src/config"],
-      "@data": ["src/data"],
-      "@fonts": ["src/assets/fonts"],
-      "@hooks/*": ["src/hooks/*"],
-      "@i18n": ["src/i18n"],
-      "@images": ["src/assets/images"],
-      "@lotties": ["src/assets/lotties"],
-      "@store/*": ["src/store/*"],
-      "@styles": ["src/styles"],
-      "@screens": ["src/screens"],
-      "@utils": ["src/utils/utils"],
-      "@theme": ["src/utils/theme"]
+      "@assets": ["assets"],
+      "@components/*": ["components/*"],
+      "@constants": ["constants"],
+      "@config": ["config"],
+      "@fonts": ["assets/fonts"],
+      "@hooks/*": ["hooks/*"],
+      "@i18n": ["i18n"],
+      "@images": ["assets/images"],
+      "@lotties": ["assets/lotties"],
+      "@store/*": ["store/*"],
+      "@styles": ["styles/*"],
+      "@screens/*": ["screens/*"],
+      "@utils": ["utils/utils"],
+      "@theme": ["utils/theme"]
     }
   }
 }

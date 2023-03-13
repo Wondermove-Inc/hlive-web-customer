@@ -36,15 +36,22 @@ export default function Header() {
           </IconButton>
 
           {isExpanded ? (
-            <div style={styles.countryOptions}>
+            <Box sx={styles.countryOptions}>
               {countries.map((country, index) => {
                 return (
-                  <IconButton key={index} style={styles.countryOptionText} disableTouchRipple>
-                    <Typography>{country}</Typography>
+                  <IconButton
+                    onClick={() => {
+                      console.log({ country });
+                    }}
+                    key={index}
+                    style={styles.countryButton}
+                    disableTouchRipple
+                  >
+                    <Typography sx={styles.countryText}>{country}</Typography>
                   </IconButton>
                 );
               })}
-            </div>
+            </Box>
           ) : null}
         </div>
       </Toolbar>

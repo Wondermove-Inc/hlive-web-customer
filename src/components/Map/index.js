@@ -4,10 +4,10 @@ import image_pin_selected from '@images/image_pin_selected.png';
 import image_pin_unselected from '@images/image_pin_unselected.png';
 import './styles.css';
 import { height } from '@theme';
+// import '@here/maps-api-for-javascript';
 
 const styles = {
   map: {
-    // width: '100%',
     height: height.map,
   },
 };
@@ -61,15 +61,15 @@ export const DealershipMap = forwardRef(({ dealershipList, handleModalOpen, moda
       hMap.addObject(dealerShipMarker);
 
       // Clustering
-      const dataPoints = new H.clustering.DataPoint(item?.position.coordinates[1], item?.position.coordinates[0]);
-      const clusteredDataProvider = new H.clustering.Provider(dataPoints, {
-        clusteringOptions: {
-          eps: 32, // Maximum radius of the neighbourhood
-          minWeight: 2, // minimum weight of points required to form a cluster
-        },
-      });
-      const clusteringLayer = new H.map.layer.ObjectLayer(clusteredDataProvider);
-      hMap.addLayer(clusteringLayer);
+      // const dataPoints = new H.clustering.DataPoint(item?.position.coordinates[1], item?.position.coordinates[0]);
+      // const clusteredDataProvider = new H.clustering.Provider(dataPoints, {
+      //   clusteringOptions: {
+      //     eps: 32, // Maximum radius of the neighbourhood
+      //     minWeight: 2, // minimum weight of points required to form a cluster
+      //   },
+      // });
+      // const clusteringLayer = new H.map.layer.ObjectLayer(clusteredDataProvider);
+      // hMap.addLayer(clusteringLayer);
     });
     ref.current = hMap;
     // This will act as a cleanup to run once this hook runs again.

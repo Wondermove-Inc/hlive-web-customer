@@ -10,9 +10,11 @@ import TimePicker from '@components/TimePicker';
 import { MainButton } from '@components/Button';
 
 export default function Reservation({ vehicleModelInfo, dealershipInfo, customerInfo, handleClose }) {
+  //                                                             VARIABLE
   const { t } = useTranslation();
   const [dealershipAvailable, setDealershipAvailable] = useState(true);
 
+  //                                                             RENDER
   return (
     <>
       <div style={styles.container}>

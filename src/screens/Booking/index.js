@@ -13,10 +13,11 @@ import PersonalInfo from '@screens/0300_PersonalInfo';
 import Confirmation from '@screens/0430_Confirmation';
 import { styles } from './styles';
 import { fonts } from '@theme';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import moment from 'moment';
 
 export default function Booking() {
+  //                                                             VARIABLE
   const [currentStep, setCurrentStep] = useState(0);
   const { t } = useTranslation();
   const { selectedVehicleInfo, selectedDealershipInfo, selectedBookingDate, selectedBookingTime } = bookingStore();
@@ -25,6 +26,7 @@ export default function Booking() {
   const [isLiveConsult, setIsLiveConsult] = useState(false);
   const convertedBookingDate = moment(selectedBookingDate).format('MMM.DD.YYYY');
 
+  //                                                              FUNCTIONS
   const handleStep = (step) => () => {
     setCurrentStep(step);
   };
@@ -46,6 +48,7 @@ export default function Booking() {
     }
   };
 
+  //                                                             RENDER
   return (
     <>
       <Header />

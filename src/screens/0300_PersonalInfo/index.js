@@ -10,15 +10,15 @@ import { MainButton } from '@components/Button';
 import axios from 'axios';
 import SearchAddress from '@components/AutoComplete';
 import MainCheckBox from '@components/CheckBox';
-import bookingStore from '@store/zustand/booking.store';
+import bookingStore from '@store/booking.store';
 import { encryptData } from '@utils';
-import { HLIVE_SERVER_URI } from '@constants';
+import { HLIVE_SERVER_URI, SERVER_URI } from '@constants';
 import moment from 'moment';
 
 export default function PersonalInfo(props) {
+  //                                                            VARIABLE
   const { currentStep, setCurrentStep, isLiveConsult } = props;
   const { selectedVehicleInfo, selectedDealershipInfo, selectedBookingDate, selectedBookingTime, customerInfo, setRequestResult } = bookingStore();
-
   const convertedBookingDate = moment(selectedBookingDate).format('YYYY-MM-DD');
 
   const [isLoading, setIsLoading] = useState(false);
@@ -27,15 +27,15 @@ export default function PersonalInfo(props) {
 
   const [geoLocation, setGeoLocation] = useState();
   const [title, setTitle] = useState('Mr.');
-  const [firstName, setFirstName] = useState(customerInfo?.firstName || '');
-  const [lastName, setLastName] = useState(customerInfo?.lastName || '');
-  const [email, setEmail] = useState(customerInfo?.email || '');
-  const [userPhoneNumber, setUserPhoneNumber] = useState(customerInfo?.phone) || '';
-  const [street, setStreet] = useState(customerInfo?.street || '');
-  const [houseNumber, setHouseNumber] = useState(customerInfo?.houseNumber || '');
-  const [postCode, setPostCode] = useState(customerInfo?.postCode || '');
-  const [city, setCity] = useState(customerInfo?.city || '');
-  const [comment, setComment] = useState(customerInfo?.comment || '');
+  const [firstName, setFirstName] = useState('venom');
+  const [lastName, setLastName] = useState('venom');
+  const [email, setEmail] = useState('venom@wondermove.net');
+  const [userPhoneNumber, setUserPhoneNumber] = useState('01234567890');
+  const [street, setStreet] = useState('Main street');
+  const [houseNumber, setHouseNumber] = useState('1');
+  const [postCode, setPostCode] = useState('12345');
+  const [city, setCity] = useState('Seoul');
+  const [comment, setComment] = useState('Hello dealer!');
 
   const [firstNameError, setFirstNameError] = useState(false);
   const [lastNameError, setLastNameError] = useState(false);
@@ -47,7 +47,7 @@ export default function PersonalInfo(props) {
   const [cityError, setCityError] = useState(false);
   const [commentError, setCommentError] = useState(false);
 
-  const [privacyAgreement, setPrivacyAgreement] = useState(false);
+  const [privacyAgreement, setPrivacyAgreement] = useState(true);
   const [marketingAgreement, setMarketingAgreement] = useState(false);
   const [marketingEmail, setMarketingEmail] = useState(false);
   const [marketingMail, setMarketingMail] = useState(false);
@@ -58,6 +58,7 @@ export default function PersonalInfo(props) {
   const emailRegex = /^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
   const phoneNumberRegex = /[0-9]{9,14}/g;
 
+  //                                                              FUNCTIONS
   const getGeoLocation = async () => {
     try {
       const response = await axios.get('https://geolocation-db.com/json/');
@@ -149,10 +150,12 @@ export default function PersonalInfo(props) {
     console.log(req);
     const encryptedBody = await encryptData(req);
     try {
-      const response = await axios.post('http://localhost:4000/viva/apis/hLiveCustomerWeb/createHLiveRequest', {
-        encryptedBody,
-      });
+      const response = await axios.post(`${HLIVE_SERVER_URI}/hLiveCustomerWeb/createHLiveRequest`, { encryptedBody });
+      // const response = await axios.post('http://192.168.1.231:4000/viva/apis/hLiveCustomerWeb/createHLiveRequest', {
+      // encryptedBody,
+      // });
       if (response) {
+        console.log('123');
         setRequestResult(response.data.data.serviceRequest._id);
         const requestId = response.data.data.serviceRequest._id;
 
@@ -208,6 +211,7 @@ export default function PersonalInfo(props) {
     setMarketingMessenger(!marketingMessenger);
   };
 
+  //                                                             RENDER
   return (
     <>
       <Subtitle title={t('input_your_information')} />
@@ -274,6 +278,7 @@ export default function PersonalInfo(props) {
           <Grid item xs={6} sm={6} md={6} lg={6}>
             <StyledTextInput
               label={t('street')}
+              value={street}
               onChange={(event) => setStreet(event.target.value)}
               required
               helperText={streetError ? 'Invalid format' : null}
